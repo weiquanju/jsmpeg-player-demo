@@ -142,10 +142,10 @@ canvas,
     background-repeat: no-repeat;
     background-size: 80%;
     &._pause {
-      background-image: url("/assets/images/svg/player/pause-circle-line.svg");
+      background-image: url("/player/pause-circle-line.svg");
     }
     &._play {
-      background-image: url("/assets/images/svg/player/play-circle-line.svg");
+      background-image: url("/player/play-circle-line.svg");
     }
   }
   &-bar {
@@ -169,10 +169,10 @@ canvas,
       background-repeat: no-repeat;
       background-size: 80%;
       &._exit {
-        background-image: url("/assets/images/svg/player/fullscreen-exit.svg");
+        background-image: url("/player/fullscreen-exit.svg");
       }
       &._fill {
-        background-image: url("/assets/images/svg/player/fullscreen-fill.svg");
+        background-image: url("/player/fullscreen-fill.svg");
       }
     }
     &-icon {
@@ -184,10 +184,10 @@ canvas,
       background-repeat: no-repeat;
       background-size: 80%;
       &._pause {
-        background-image: url("/assets/images/svg/player/pause-line.svg");
+        background-image: url("/player/pause-line.svg");
       }
       &._play {
-        background-image: url("/assets/images/svg/player/play-line.svg");
+        background-image: url("/player/play-line.svg");
       }
     }
   }
