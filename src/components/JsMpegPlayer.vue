@@ -1,10 +1,16 @@
 <template>
-  <div :class="`jsmpeg ${fullStatus ? 'fullRote' : ''}`">
-    <!-- <canvas id="player-canvas" @touchstart="showBar = !showBar" /> -->
-    <div class="jsmpeg-icon _play" v-if="!playStatus" @touchstart="play" />
+  <div :class="`jsmpeg ${fullStatus ? 'fullRote' : ''}`" :showBar="showBar">
+    <canvas ref="canvas" @click="showBar = !showBar" />
+    <div class="jsmpeg-icon _play" v-if="!playStatus" @click="play" />
     <div :class="`jsmpeg-bar ${showBar ? '_show' : '_hide'}`">
-      <div :class="`jsmpeg-bar-icon ${!playStatus ? '_play' : '_pause'}`" @touchstart="play" />
-      <div :class="`jsmpeg-bar-full ${fullStatus ? '_exit' : '_fill'} `" @touchstart="fullScreen" />
+      <div
+        :class="`jsmpeg-bar-icon ${!playStatus ? '_play' : '_pause'}`"
+        @click="play"
+      />
+      <div
+        :class="`jsmpeg-bar-full ${fullStatus ? '_exit' : '_fill'} `"
+        @click="fullScreen"
+      />
     </div>
   </div>
 </template>
@@ -15,8 +21,8 @@ let fullTimer = 0;
 export default {
   props: {
     url: {
-      type: String
-    }
+      type: String,
+    },
   },
   data() {
     return {
@@ -24,7 +30,7 @@ export default {
       render: false,
       player: null,
       playStatus: false,
-      fullStatus: false
+      fullStatus: false,
     };
   },
   watch: {
@@ -33,22 +39,10 @@ export default {
       handler() {
         if (barTimer) clearTimeout(barTimer);
         if (this.showBar) setTimeout(() => (this.showBar = false), 3000);
-      }
+      },
     },
-    url: {
-      immediate: true,
-      handler() {
-        this.destroy();
-        this.$nextTick(() => {
-          this.$nextTick(() => this.initPlayer());
-        });
-      }
-    }
   },
   methods: {
-    noop(...args) {
-      console.log(...args);
-    },
     fullScreen() {
       if (fullTimer) {
         return null;
@@ -59,57 +53,35 @@ export default {
         : document.documentElement.requestFullscreen();
       this.fullStatus = !this.fullStatus;
       // 节流
-      fullTimer = setTimeout(() => (fullTimer = 0), 1000);
+      fullTimer = setTimeout(() => (fullTimer = 0), 500);
     },
     initPlayer() {
-      // showBar = !showBar
-      let canvas = document.querySelector("#player-canvas");
-      let icon = document.querySelector(".jsmpeg-icon");
-      let jsmpeg = document.querySelector(".jsmpeg");
-      if (!canvas) {
-        canvas = document.createElement("canvas");
-        canvas.id = "player";
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
-        canvas.addEventListener("touchstart", () => {
-          this.showBar = !this.showBar;
-        });
-        jsmpeg.insertBefore(canvas, icon);
-      }
-      this.$nextTick(() => {
-        this.player = new JSMpeg.Player(this.url, {
-          canvas: canvas,
-          onPlay: player => {
-            // console.log("player playing");
-            this.playStatus = true;
-          },
-          onPause: player => {
-            // console.log("player pause");
-            this.playStatus = false;
-          }
-        });
+      this.player = new JSMpeg.Player(this.url, {
+        canvas: this.$refs.canvas,
+        onPlay: () => {
+          this.playStatus = true;
+        },
+        onPause: () => {
+          this.playStatus = false;
+        },
       });
     },
     play() {
-      // console.log("player status", this.playStatus);
       this.playStatus ? this.player.pause() : this.player.play();
     },
     destroy() {
-      let canvas = document.getElementById("#player-canvas");
-      if (canvas) {
-        let jsmpeg = document.querySelector(".jsmpeg");
-        console.log("remove canvas", jsmpeg, canvas);
-        jsmpeg.removeChild(canvas);
-      }
       if (this.player) {
         this.playStatus && this.player.stop();
         this.player.destroy();
       }
-    }
+    },
+  },
+  mounted() {
+    this.$nextTick(() => this.initPlayer());
   },
   destroyed() {
     this.destroy();
-  }
+  },
 };
 </script>
 <style scoped lang="scss">
@@ -117,17 +89,18 @@ canvas,
 .jsmpeg {
   height: 100%;
   width: 100%;
+  background: #000;
 }
 .jsmpeg {
   position: relative;
   transform-origin: center;
   &.fullRote {
     position: fixed;
-    width: 100vh;
-    height: 100vw;
+    width: 100vw;
+    height: 100vh;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(90deg);
+    transform: translate(-50%, -50%);
     z-index: 10000;
   }
   &-icon {

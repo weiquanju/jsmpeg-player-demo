@@ -1,7 +1,6 @@
 <template>
   <div>
     <JsMpegPlayerVue class="player" :url="url" />
-    <input v-model="url" id="input" />
   </div>
 </template>
 <script>
@@ -18,11 +17,11 @@ export default {
 </script>
 <style scoped lang="scss">
 .player {
-  width: 100vw;
-  height: 9 / 16 * 100vw;
+  width: 60vw;
+  height: 9 / 16 * 60vw;
 }
 #input {
-  width: calc(100vw - 2px);
+  width: calc(60vw - 2px);
   border: solid 1px #666;
   margin: 1em 0;
   padding: 0;
