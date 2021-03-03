@@ -103,7 +103,6 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-canvas,
 .jsmpeg {
   height: 100%;
   width: 100%;
