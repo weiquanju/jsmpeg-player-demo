@@ -11,7 +11,13 @@ export default {
     JsMpegPlayerVue
   },
   data() {
-    return { url: "ws://218.89.244.122:8021" };
+    return { url: "ws://125.70.208.96:8028" };
+  },
+  mounted(){
+    setTimeout(()=>{
+      this.url = 'ws://125.70.208.96:8026'
+      console.log('change')
+    },3000)
   }
 };
 </script>

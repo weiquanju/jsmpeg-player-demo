@@ -1,6 +1,6 @@
 <template>
   <div :class="`jsmpeg ${fullStatus ? 'fullRote' : ''}`" :showBar="showBar">
-    <canvas ref="canvas" @click="showBar = !showBar" />
+    <!-- <canvas ref="canvas" @click="showBar = !showBar" id="canvas" /> -->
     <div class="jsmpeg-icon _play" v-if="!playStatus" @click="play" />
     <div :class="`jsmpeg-bar ${showBar ? '_show' : '_hide'}`">
       <div
@@ -27,7 +27,6 @@ export default {
   data() {
     return {
       showBar: true,
-      render: false,
       player: null,
       playStatus: false,
       fullStatus: false,
@@ -39,6 +38,14 @@ export default {
       handler() {
         if (barTimer) clearTimeout(barTimer);
         if (this.showBar) setTimeout(() => (this.showBar = false), 3000);
+      },
+    },
+    url: {
+      immediate: true,
+      handler() {
+        this.$nextTick(() => {
+          this.initPlayer();
+        });
       },
     },
   },
@@ -56,8 +63,23 @@ export default {
       fullTimer = setTimeout(() => (fullTimer = 0), 500);
     },
     initPlayer() {
+      this.destroy();
+      let canvas = document.querySelector("#canvas");
+      let jsmpeg = document.querySelector(".jsmpeg");
+      if (canvas) {
+        jsmpeg.removeChild(canvas);
+      }
+      canvas = document.createElement("canvas");
+      canvas.id = "canvas";
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
+      canvas.addEventListener("touchstart", () => {
+        this.showBar = !this.showBar;
+      });
+      jsmpeg.prepend(canvas);
+      console.log(jsmpeg);
       this.player = new JSMpeg.Player(this.url, {
-        canvas: this.$refs.canvas,
+        canvas: canvas,
         onPlay: () => {
           this.playStatus = true;
         },
@@ -71,13 +93,9 @@ export default {
     },
     destroy() {
       if (this.player) {
-        this.playStatus && this.player.stop();
         this.player.destroy();
       }
     },
-  },
-  mounted() {
-    this.$nextTick(() => this.initPlayer());
   },
   destroyed() {
     this.destroy();
